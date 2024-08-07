@@ -1,0 +1,23 @@
+{
+  "name": "@misx/dev",
+  "version": "0.1.0",
+  "description": "Development setup for managing all packages",
+  "author": "motivationisdead",
+  "license": "MIT",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "funding": "https://github.com/sponsors/motivationisdead",
+  "homepage": "https://github.com/motivationisdead/dev",
+  "bugs": "https://github.com/motivationisdead/dev/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/motivationisdead/dev.git"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
+}
