@@ -1,7 +1,7 @@
 import { $ } from 'bun'
 import process from 'node:process'
 
-const repo = process.argv[2]
+const repo = process.argv.at(2)
 const repoUrl = `https://github.com/motivationisdead/${repo}.git`
 
 if (!repo) {
