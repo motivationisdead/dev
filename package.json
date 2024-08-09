@@ -14,6 +14,7 @@
     "url": "git+https://github.com/motivationisdead/dev.git"
   },
   "scripts": {
+    "setup": "bun scripts/setup.ts",
     "lint": "bun scripts/lint.ts"
   },
   "workspaces": [
