@@ -14,12 +14,14 @@ const files = (await $`git ${listFiles}`.quiet())
 
 console.log(`${fmt ? 'formatting:' : 'linting:'} ${files.join(' ')}\n`)
 
+// Always run from dev root
 if (repo === 'packages/dev') {
   repo = '.'
 } else {
   process.chdir('../..')
 }
 
+// Run linters
 try {
   await $`bun -b x prettier --ignore-path ${fmt ? '-w' : '-c'}\
     ${repo}/{${files.join(',')}}`

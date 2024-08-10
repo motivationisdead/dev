@@ -17,6 +17,7 @@ try {
 
 process.chdir(`packages/${repo}`)
 
+// Install dependencies
 await $`bun i`
 await $`cp ../../.gitignore .`
 await $`echo /.gitignore >> .gitignore`

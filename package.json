@@ -13,6 +13,9 @@
     "type": "git",
     "url": "git+https://github.com/motivationisdead/dev.git"
   },
+  "keywords": [
+    "misx"
+  ],
   "scripts": {
     "setup": "bun scripts/setup.ts",
     "lint": "bun scripts/lint.ts"
@@ -24,6 +27,7 @@
     "@types/bun": "latest",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
+    "esbuild": "latest",
     "eslint": "latest",
     "prettier": "latest",
     "typescript": "latest"
