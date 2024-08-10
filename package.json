@@ -13,15 +13,23 @@
     "type": "git",
     "url": "git+https://github.com/motivationisdead/dev.git"
   },
+  "keywords": [
+    "misx"
+  ],
+  "scripts": {
+    "setup": "bun scripts/setup.ts",
+    "lint": "bun scripts/lint.ts"
+  },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
     "@types/bun": "latest",
-    "@typescript-eslint/eslint-plugin": "latest",
-    "@typescript-eslint/parser": "latest",
-    "eslint": "latest",
-    "prettier": "latest",
+    "@typescript-eslint/eslint-plugin": "8.0.1",
+    "@typescript-eslint/parser": "8.0.1",
+    "esbuild": "0.23.0",
+    "eslint": "9.9.0",
+    "prettier": "3.3.3",
     "typescript": "latest"
   }
 }
