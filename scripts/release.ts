@@ -100,7 +100,7 @@ if (dryRun || process.env.NPM_TOKEN) {
 if (process.env.GH_TOKEN) {
   const changelog = await Bun.file('CHANGELOG.md').text()
 
-  Bun.write('changelog.tmp', changelog.match(/(?<=##.+\n\n).+?(?=\n##|$)/s)![0])
+  Bun.write('changelog.tmp', /(?<=##.+\n\n).+?(?=\n##|$)/s.exec(changelog)![0])
 
   await $`gh release create v${pkg.version} -t v${pkg.version} -F changelog.tmp\
     ${rc ? '-p' : ''}`
