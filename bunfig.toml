@@ -1,0 +1,12 @@
+telemetry = false
+
+[install]
+auto = 'disable'
+
+[install.lockfile]
+save = false
+
+[test]
+coverage = true
+coverageThreshold = 1
+root = 'tests'

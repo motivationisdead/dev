@@ -19,5 +19,9 @@ process.chdir(`packages/${repo}`)
 
 // Install dependencies
 await $`bun i`
+
+// Copy files from dev
 await $`cp ../../.gitignore .`
 await $`echo /.gitignore >> .gitignore`
+await $`ln -fs ../../bunfig.toml .`
+await $`echo /bunfig.toml >> .gitignore`
