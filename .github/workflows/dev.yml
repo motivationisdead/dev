@@ -1,0 +1,30 @@
+name: dev
+
+on: push
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          repository: motivationisdead/dev
+
+      - name: Set up bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          key: node_modules
+          path: node_modules
+
+      - name: Set up dev
+        run: bun i
+
+      - name: Run linters
+        run: git fetch --depth=1 origin main && bun lint
+
+      - name: Run tests
+        run: bun test
