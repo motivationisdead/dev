@@ -3,7 +3,6 @@ import process from 'node:process'
 
 let repo = `packages/${/[a-z-]+$/.exec(process.cwd())?.[0]}`
 const args = process.argv.slice(2).toString()
-const fmt = args.includes('f')
 const listFiles =
   args.includes('a') ||
   (await $`git branch --show-current`.quiet()).text().trim() === 'main'
@@ -25,16 +24,20 @@ if (await Bun.file('tsconfig.json').exists()) {
   process.chdir('../..')
 }
 
+const fmt = args.includes('f')
+const fileList = (list: string[]): string =>
+  `${repo}/${list.length === 1 ? list : `{${list}}`}`
+
 // Run linters
 try {
   await $`bun -b x prettier --config .prettierrc.json --ignore-path\
-    ${fmt ? '-w' : '-c'} ${repo}/{${files.join(',')}}`
+    ${fmt ? '-w' : '-c'} ${fileList(files)}`
 
   const tsFiles = files.filter((ext) => ext.endsWith('.ts'))
 
   if (tsFiles.length !== 0) {
     await $`bun -b x eslint -c eslint.config.ts ${fmt ? '--fix' : ''}\
-      ${repo}/{${tsFiles.join(',')}}`
+      ${fileList(tsFiles)}`
   }
 } catch {
   process.exit(1)
