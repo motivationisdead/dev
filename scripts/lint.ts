@@ -4,18 +4,22 @@ import process from 'node:process'
 let repo = `packages/${/[a-z-]+$/.exec(process.cwd())?.[0]}`
 const args = process.argv.slice(2).toString()
 const fmt = args.includes('f')
-const listFiles = args.includes('a')
-  ? 'ls-files'
-  : ['diff', 'origin/main', '--diff-filter=dxb', '--name-only']
+const listFiles =
+  args.includes('a') ||
+  (await $`git branch --show-current`.quiet()).text().trim() === 'main'
+    ? 'ls-files'
+    : ['diff', 'origin/main', '--diff-filter=dxb', '--name-only']
 const files = (await $`git ${listFiles}`.quiet())
   .text()
   .split('\n')
   .filter((ext) => /\.(?:json|md|ts|yml)$/.test(ext))
 
-console.log(`${fmt ? 'formatting:' : 'linting:'} ${files.join(' ')}\n`)
+if (files.length === 0) {
+  process.exit(0)
+}
 
 // Always run from dev root
-if (repo === 'packages/dev') {
+if (await Bun.file('tsconfig.json').exists()) {
   repo = '.'
 } else {
   process.chdir('../..')
@@ -23,10 +27,15 @@ if (repo === 'packages/dev') {
 
 // Run linters
 try {
-  await $`bun -b x prettier --ignore-path ${fmt ? '-w' : '-c'}\
-    ${repo}/{${files.join(',')}}`
-  await $`bun -b x eslint ${fmt ? '--fix' : ''}\
-    ${repo}/{${files.filter((ext) => ext.endsWith('.ts')).join(',')}}`
+  await $`bun -b x prettier --config .prettierrc.json --ignore-path\
+    ${fmt ? '-w' : '-c'} ${repo}/{${files.join(',')}}`
+
+  const tsFiles = files.filter((ext) => ext.endsWith('.ts'))
+
+  if (tsFiles.length !== 0) {
+    await $`bun -b x eslint -c eslint.config.ts ${fmt ? '--fix' : ''}\
+      ${repo}/{${tsFiles.join(',')}}`
+  }
 } catch {
   process.exit(1)
 }

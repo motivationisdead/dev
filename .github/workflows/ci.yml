@@ -1,0 +1,46 @@
+name: ci
+
+on:
+  workflow_call:
+    inputs:
+      user:
+        required: true
+        type: string
+      repo:
+        required: true
+        type: string
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          repository: motivationisdead/dev
+
+      - name: Checkout ${{ inputs.repo }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.user }}/${{ inputs.repo }}
+          path: packages/${{ inputs.repo }}
+
+      - name: Set up bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          key: node_modules
+          path: node_modules
+
+      - name: Set up ${{ inputs.repo }}
+        run: bun setup ${{ inputs.user }}/${{ inputs.repo }}
+
+      - name: Run linters
+        run: git fetch --depth=1 origin main && bun lint
+        working-directory: packages/${{ inputs.repo }}
+
+      - name: Run tests
+        run: bun test
+        working-directory: packages/${{ inputs.repo }}

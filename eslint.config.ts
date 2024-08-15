@@ -1,3 +1,4 @@
+/* eslint-disable id-length, max-lines */
 import parser from '@typescript-eslint/parser'
 import plugin from '@typescript-eslint/eslint-plugin'
 
@@ -32,7 +33,7 @@ export default {
     },
   },
   rules: {
-    //* https://typescript-eslint.io/rules/
+    // https://typescript-eslint.io/rules/
     '@typescript-eslint/adjacent-overload-signatures': 2,
     '@typescript-eslint/array-type': 2,
     '@typescript-eslint/await-thenable': 2,
@@ -57,9 +58,9 @@ export default {
     '@typescript-eslint/explicit-module-boundary-types': 0,
     '@typescript-eslint/init-declarations': 2,
     '@typescript-eslint/max-params': [2, { max: 5 }],
-    '@typescript-eslint/member-ordering': 0, //? Maybe
+    '@typescript-eslint/member-ordering': 0,
     '@typescript-eslint/method-signature-style': 2,
-    '@typescript-eslint/naming-convention': 0, //? Maybe
+    '@typescript-eslint/naming-convention': 0,
     '@typescript-eslint/no-array-constructor': 2,
     '@typescript-eslint/no-array-delete': 2,
     '@typescript-eslint/no-base-to-string': 2,
@@ -74,7 +75,7 @@ export default {
     '@typescript-eslint/no-explicit-any': 2,
     '@typescript-eslint/no-extra-non-null-assertion': 2,
     '@typescript-eslint/no-extraneous-class': 2,
-    '@typescript-eslint/no-floating-promises': 0, //? Maybe
+    '@typescript-eslint/no-floating-promises': 0,
     '@typescript-eslint/no-for-in-array': 2,
     '@typescript-eslint/no-implied-eval': 2,
     '@typescript-eslint/no-import-type-side-effects': 2,
@@ -90,7 +91,7 @@ export default {
     '@typescript-eslint/no-namespace': 2,
     '@typescript-eslint/no-non-null-asserted-nullish-coalescing': 2,
     '@typescript-eslint/no-non-null-asserted-optional-chain': 2,
-    '@typescript-eslint/no-non-null-assertion': 0, //? Maybe
+    '@typescript-eslint/no-non-null-assertion': 0,
     '@typescript-eslint/no-redeclare': 2,
     '@typescript-eslint/no-redundant-type-constituents': 2,
     '@typescript-eslint/no-require-imports': 2,
@@ -158,7 +159,7 @@ export default {
     ],
     '@typescript-eslint/restrict-template-expressions': 0,
     '@typescript-eslint/return-await': [2, 'always'],
-    '@typescript-eslint/strict-boolean-expressions': 0, //? Maybe
+    '@typescript-eslint/strict-boolean-expressions': 0,
     '@typescript-eslint/switch-exhaustiveness-check': 0,
     '@typescript-eslint/triple-slash-reference': [2, { types: 'never' }],
     '@typescript-eslint/typedef': 0,
@@ -166,7 +167,7 @@ export default {
     '@typescript-eslint/unified-signatures': 2,
     '@typescript-eslint/use-unknown-in-catch-callback-variable': 2,
 
-    //* https://eslint.org/docs/latest/rules/
+    // https://eslint.org/docs/latest/rules/
     'accessor-pairs': 2,
     'array-callback-return': 2,
     'arrow-body-style': 2,
