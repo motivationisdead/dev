@@ -1,0 +1,62 @@
+name: cd
+
+on:
+  workflow_call:
+    inputs:
+      user:
+        required: true
+        type: string
+      repo:
+        required: true
+        type: string
+    secrets:
+      GH_TOKEN:
+        required: true
+      NPM_TOKEN:
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          repository: motivationisdead/dev
+
+      - name: Checkout ${{ inputs.repo }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.user }}/${{ inputs.repo }}
+          path: packages/${{ inputs.repo }}
+
+      - name: Check if release
+        run: '[[ ! $(git log -1 --format=%B) =~ ^Release ]]
+          || echo release=1 >> $GITHUB_ENV'
+        working-directory: packages/${{ inputs.repo }}
+
+      - if: ${{ env.release }}
+        name: Set up bun
+        uses: oven-sh/setup-bun@v2
+
+      - if: ${{ env.release }}
+        name: Cache
+        uses: actions/cache@v4
+        with:
+          key: node_modules
+          path: node_modules
+
+      - if: ${{ env.release }}
+        name: Set up ${{ inputs.repo }}
+        run: bun setup ${{ inputs.user }}/${{ inputs.repo }}
+
+      - if: ${{ env.release }}
+        name: Release
+        run: bun release
+        working-directory: packages/${{ inputs.repo }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
