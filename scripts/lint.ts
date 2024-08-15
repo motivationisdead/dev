@@ -4,9 +4,11 @@ import process from 'node:process'
 let repo = `packages/${/[a-z-]+$/.exec(process.cwd())?.[0]}`
 const args = process.argv.slice(2).toString()
 const fmt = args.includes('f')
-const listFiles = args.includes('a')
-  ? 'ls-files'
-  : ['diff', 'origin/main', '--diff-filter=dxb', '--name-only']
+const listFiles =
+  args.includes('a') ||
+  (await $`git branch --show-current`.quiet()).text().trim() === 'main'
+    ? 'ls-files'
+    : ['diff', 'origin/main', '--diff-filter=dxb', '--name-only']
 const files = (await $`git ${listFiles}`.quiet())
   .text()
   .split('\n')
