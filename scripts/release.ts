@@ -64,10 +64,10 @@ await $`cd ../.. && bun -b x prettier -w packages/${repo}/${typesFile}\
   --ignore-path`
 
 // Publish to JSR
-const dryRun = process.argv.at(2) === '--dry-run'
+const dryRun = process.argv.at(2) !== '-p'
 const rc = pkg.version!.includes('-')
 
-if (dryRun || process.env.JSR_TOKEN) {
+if (dryRun || process.env.PUBLISH_JSR === 'true') {
   const jsr: Record<string, string | Record<string, string | string[]>> = {
     name: pkg.name!,
     version: pkg.version!,
@@ -90,14 +90,14 @@ if (dryRun || process.env.JSR_TOKEN) {
 }
 
 // Publish to npm
-if (dryRun || process.env.NPM_TOKEN) {
+if (dryRun || 'NPM_TOKEN' in process.env) {
   await $`cd dist && npm publish --tag ${rc ? 'next' : 'latest'}\
     --access public ${dryRun ? '--dry-run' : ''}`
   await $`rm -r dist`
 }
 
 // Release on GitHub
-if (process.env.GH_TOKEN) {
+if ('GH_TOKEN' in process.env) {
   const changelog = await Bun.file('CHANGELOG.md').text()
 
   Bun.write('changelog.tmp', /(?<=##.+\n\n).+?(?=\n##|$)/s.exec(changelog)![0])

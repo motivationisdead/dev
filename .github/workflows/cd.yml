@@ -9,11 +9,14 @@ on:
       repo:
         required: true
         type: string
+      jsr:
+        required: false
+        type: boolean
     secrets:
       GH_TOKEN:
-        required: true
+        required: false
       NPM_TOKEN:
-        required: true
+        required: false
 
 jobs:
   release:
@@ -55,8 +58,9 @@ jobs:
 
       - if: ${{ env.release }}
         name: Release
-        run: bun release
+        run: bun release -p
         working-directory: packages/${{ inputs.repo }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PUBLISH_JSR: ${{ inputs.jsr }}
