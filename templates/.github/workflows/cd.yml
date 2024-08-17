@@ -1,0 +1,19 @@
+name: ((repo))
+
+on:
+  push:
+    branches: main
+
+jobs:
+  cd:
+    uses: motivationisdead/dev/.github/workflows/cd.yml@main
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      user: ((user))
+      repo: ((repo))
+      jsr: true
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

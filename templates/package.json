@@ -1,0 +1,21 @@
+{
+  "name": "@((user))/((repo))",
+  "version": "0.1.0",
+  "description": "What's this package about?",
+  "author": "((user))",
+  "main": "./src/index.ts",
+  "homepage": "https://github.com/((user))/((repo))",
+  "bugs": "https://github.com/((user))/((repo))/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/((user))/((repo)).git"
+  },
+  "keywords": [
+    "misx"
+  ],
+  "scripts": {
+    "dev": "bun examples/index.ts",
+    "lint": "bun ../../scripts/lint.ts",
+    "release": "bun ../../scripts/release.ts"
+  }
+}
