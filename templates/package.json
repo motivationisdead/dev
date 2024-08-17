@@ -1,5 +1,6 @@
 {
-  "name": "@((user))/((repo))",
+  "name": "@((npm))/((repo))",
+  "jsr": "((jsr))",
   "version": "0.1.0",
   "description": "What's this package about?",
   "author": "((user))",

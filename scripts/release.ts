@@ -3,6 +3,7 @@ import devPkg from '../package.json'
 import tsc from '../tsconfig.json'
 
 type Package = Partial<typeof devPkg> & {
+  jsr?: string
   dependencies?: Record<string, string>
 }
 
@@ -67,9 +68,9 @@ await $`cd ../.. && bun -b x prettier -w packages/${repo}/${typesFile}\
 const dryRun = process.argv.at(2) !== '-p'
 const rc = pkg.version!.includes('-')
 
-if (dryRun || process.env.PUBLISH_JSR === 'true') {
+if (pkg.jsr) {
   const jsr: Record<string, string | Record<string, string | string[]>> = {
-    name: pkg.name!,
+    name: `@${pkg.jsr}/${repo}`,
     version: pkg.version!,
     exports: pkgMain!,
     publish: { include: ['LICENSE', 'README.md', 'src'] },
@@ -90,14 +91,14 @@ if (dryRun || process.env.PUBLISH_JSR === 'true') {
 }
 
 // Publish to npm
-if (dryRun || 'NPM_TOKEN' in process.env) {
+if (dryRun || process.env.NPM_TOKEN) {
   await $`cd dist && npm publish --tag ${rc ? 'next' : 'latest'}\
     --access public ${dryRun ? '--dry-run' : ''}`
   await $`rm -r dist`
 }
 
 // Release on GitHub
-if ('GH_TOKEN' in process.env) {
+if (process.env.GH_TOKEN) {
   const changelog = await Bun.file('CHANGELOG.md').text()
 
   Bun.write('changelog.tmp', /(?<=##.+\n\n).+?(?=\n##|$)/s.exec(changelog)![0])
