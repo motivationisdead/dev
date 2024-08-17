@@ -1,0 +1,12 @@
+name: ((repo))
+
+on:
+  push:
+    branches-ignore: main
+
+jobs:
+  ci:
+    uses: motivationisdead/dev/.github/workflows/ci.yml@main
+    with:
+      user: ((user))
+      repo: ((repo))

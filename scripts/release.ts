@@ -3,11 +3,13 @@ import devPkg from '../package.json'
 import tsc from '../tsconfig.json'
 
 type Package = Partial<typeof devPkg> & {
+  jsr?: string
   dependencies?: Record<string, string>
 }
 
 const pkg = (await Bun.file('package.json').json()) as Package
 const pkgMain = pkg.main
+const jsrUsername = pkg.jsr
 const repo = process.cwd().split('/').pop()!
 
 const rename = (key: string): string =>
@@ -32,6 +34,7 @@ pkg.repository ||= {
   url: rename(devPkg.repository.url),
 }
 ;(pkg.scripts as Record<string, string>) = {}
+delete pkg.jsr
 
 // Set version of workspace dependencies
 if (pkg.dependencies) {
@@ -67,9 +70,9 @@ await $`cd ../.. && bun -b x prettier -w packages/${repo}/${typesFile}\
 const dryRun = process.argv.at(2) !== '-p'
 const rc = pkg.version!.includes('-')
 
-if (dryRun || process.env.PUBLISH_JSR === 'true') {
+if (jsrUsername) {
   const jsr: Record<string, string | Record<string, string | string[]>> = {
-    name: pkg.name!,
+    name: `@${jsrUsername}/${repo}`,
     version: pkg.version!,
     exports: pkgMain!,
     publish: { include: ['LICENSE', 'README.md', 'src'] },
@@ -86,22 +89,23 @@ if (dryRun || process.env.PUBLISH_JSR === 'true') {
   await Bun.write('jsr.json', `${JSON.stringify(jsr, null, 2)}\n`)
   await $`bun -b x jsr publish\
     ${dryRun ? ['--allow-dirty', '--dry-run'] : '--provenance'}`
-  await $`rm jsr.json`
 }
 
 // Publish to npm
-if (dryRun || 'NPM_TOKEN' in process.env) {
+if (process.env.NPM_TOKEN ?? dryRun) {
   await $`cd dist && npm publish --tag ${rc ? 'next' : 'latest'}\
     --access public ${dryRun ? '--dry-run' : ''}`
-  await $`rm -r dist`
 }
 
 // Release on GitHub
-if ('GH_TOKEN' in process.env) {
+if (process.env.GH_TOKEN ?? dryRun) {
   const changelog = await Bun.file('CHANGELOG.md').text()
+  const changes = new RegExp(`(?<=## ${pkg.version}.+\n\n).+?(?=\n##|$)`, 's')
 
-  Bun.write('changelog.tmp', /(?<=##.+\n\n).+?(?=\n##|$)/s.exec(changelog)![0])
+  Bun.write('CHANGELOG.tmp', changes.exec(changelog)?.[0] ?? '')
 
-  await $`gh release create v${pkg.version} -t v${pkg.version} -F changelog.tmp\
-    ${rc ? '-p' : ''}`
+  if (!dryRun) {
+    await $`gh release create v${pkg.version} -t v${pkg.version}\
+      -F CHANGELOG.tmp ${rc ? '-p' : ''}`
+  }
 }

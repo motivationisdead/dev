@@ -5,10 +5,14 @@ const questions = async (): Promise<Record<string, string>> =>
   await new Promise((resolve) => {
     const rl = createInterface({ input: process.stdin, output: process.stdout })
 
-    rl.question('GitHub Username: ', (user) => {
-      rl.question('GitHub Repository: ', (repo) => {
-        resolve({ user, repo })
-        rl.close()
+    rl.question('GitHub Repository: ', (repo) => {
+      rl.question('GitHub Username: ', (user) => {
+        rl.question('npm Username: ', (npm) => {
+          rl.question('JSR Username: ', (jsr) => {
+            resolve({ repo, user, npm, jsr })
+            rl.close()
+          })
+        })
       })
     })
   })
@@ -23,6 +27,8 @@ const templateFiles = await readdir('templates', {
 }).then((dirent) =>
   dirent.filter((d) => d.isFile()).map((d) => `${d.parentPath}/${d.name}`),
 )
+
+inputs.npm ||= inputs.user
 
 await mkdir(`packages/${inputs.repo}`)
 process.chdir(`packages/${inputs.repo}`)
